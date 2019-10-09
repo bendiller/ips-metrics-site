@@ -8,6 +8,17 @@ Followed this to get started: https://docs.djangoproject.com/en/2.2/intro/tutori
 - Initialize an app within the project:
 
   `$ python manage.py startapp polls`
+  
+- Add the app to `INSTALLED_APPS`:
+
+  ```
+  # <site_name>/settings.py
+  INSTALLED_APPS = [
+    '<app_name>.apps.<AppName>Config', # add this line
+    'django.contrib.admin', # default stuff, etc.
+    ...
+    ]
+  ```
 
 - Start the server:
 
