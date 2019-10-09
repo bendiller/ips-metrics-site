@@ -1,13 +1,9 @@
 Followed this to get started: https://docs.djangoproject.com/en/2.2/intro/tutorial01/
+Not all of these need to be run; some of this is pick-and-choose. Just intended as a quick reference.
 
-
-- Initialize a new Django project:
-
-  `$ django-admin startproject mysite` (from the directory where all project files should go)
+- Initialize a new Django project: `$ django-admin startproject mysite` (from the directory where all project files should go)
   
-- Initialize an app within the project:
-
-  `$ python manage.py startapp polls`
+- Initialize an app within the project: `$ python manage.py startapp polls`
   
 - Add the app to `INSTALLED_APPS`:
 
@@ -62,8 +58,11 @@ Followed this to get started: https://docs.djangoproject.com/en/2.2/intro/tutori
 
 - Set time zone while in <site_name>/settings.py
 
-- Initialize tables in DB:
-
-  `$ python manage.py migrate`
-  
 - Define DB models in <app_name>/models.py
+
+- Use `makemigrations` to update the SQL code used to build DB schema: `$ python manage.py makemigrations <appname>`
+
+- Initialize DB schema: `$ python manage.py migrate`
+
+
+
