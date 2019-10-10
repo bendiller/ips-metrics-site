@@ -8,12 +8,17 @@ import pytz
 from os.path import getmtime
 import os
 
+from django.apps import apps
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
-# from django.db import models
+
 import xlrd
 
-from metrics.models import WorkSheet, Cell, ColumnHeader, IPFNumber  # Doesn't seem like this would work
+Cell = apps.get_model("metrics", "Cell")
+ColumnHeader = apps.get_model("metrics", "ColumnHeader")
+IPFNumber = apps.get_model("metrics", "IPFNumber")
+WorkSheet = apps.get_model("metrics", "WorkSheet")
+
 
 
 class Command(BaseCommand):
@@ -42,6 +47,7 @@ class Command(BaseCommand):
             try:
                 for cell in Cell.objects.all():
                     self.stdout.write(str(cell))
+                    break  # Only really want to print 1 item for now.
             except Exception as e:
                 self.stdout.write(f"Exception in print: {str(e)}")
 
