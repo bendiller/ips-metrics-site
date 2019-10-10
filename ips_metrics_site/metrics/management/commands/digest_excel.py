@@ -4,10 +4,12 @@ Admin command to load data from the IPS spreadsheet and store in the DB, or prin
 """
 
 from datetime import datetime
+import pytz
 from os.path import getmtime
 import os
 
 from django.core.management.base import BaseCommand, CommandError
+from django.conf import settings
 import xlrd
 
 from metrics.models import WorkSheet, Cell, ColumnHeader, IPFNumber  # Doesn't seem like this would work
@@ -52,6 +54,7 @@ class ExcelDigester:
         """ Read all data from spreadsheet and save as DB records """
         try:
             timestamp = datetime.fromtimestamp(getmtime(self.wb_path))  # Time the workbook was last modified.
+            timestamp = pytz.timezone(settings.TIME_ZONE).localize(timestamp)  # Convert to timezone-aware
         except OSError:
             msg = f"Could not get last-modified time of workbook {self.wb_path}"
             raise OSError(msg)
