@@ -3,7 +3,7 @@ Not all of these need to be run; some of this is pick-and-choose. Just intended 
 
 - Initialize a new Django project: `$ django-admin startproject mysite` (from the directory where all project files should go)
   
-- Initialize an app within the project: `$ python manage.py startapp polls`
+- Initialize an app within the project: `$ python manage.py startapp <app_name>`
   
 - Add the app to `INSTALLED_APPS`:
 

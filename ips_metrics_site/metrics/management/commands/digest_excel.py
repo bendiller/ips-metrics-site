@@ -10,7 +10,7 @@ import os
 from django.core.management.base import BaseCommand, CommandError
 import xlrd
 
-from sandbox.models import WorkSheet, Cell, ColumnHeader, IPFNumber  # Doesn't seem like this would work
+from metrics.models import WorkSheet, Cell, ColumnHeader, IPFNumber  # Doesn't seem like this would work
 
 
 class Command(BaseCommand):
@@ -44,7 +44,7 @@ class Command(BaseCommand):
 
 
 class ExcelDigester:
-    def __init__(self, fname=".\\sandbox\\management\\commands\\IPS component list.xlsx"):
+    def __init__(self, fname=".\\metrics\\management\\commands\\IPS component list.xlsx"):
         self.wb_path = fname  # Default path depends on command run from the project (not app) directory.
         # self.logger = logs.config.create_logger(__name__)
 
