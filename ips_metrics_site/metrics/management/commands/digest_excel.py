@@ -42,8 +42,6 @@ class Command(BaseCommand):
             except:
                 pass
 
-        # self.stdout.write("Ran command")
-
 
 class ExcelDigester:
     def __init__(self, fname=".\\metrics\\management\\commands\\IPS component list.xlsx"):
@@ -83,11 +81,6 @@ class ExcelDigester:
                                          tag=sheet.cell_value(row, 1),
                                          worksheet=ws)
             ipf_numbers[row].save()
-        # Old SQLAlchemy code:
-        # ipf_numbers = {row: db.IPFNumber(value=sheet.cell_value(row, 0),
-        #                                  row_idx=row + 1,
-        #                                  tag=sheet.cell_value(row, 1))
-        #                for row in range(1, sheet.nrows)}
 
         # Build dict of ColumnHeader objects (indexed by column number):
         column_headers = dict()
@@ -96,16 +89,6 @@ class ExcelDigester:
                                                col_idx=col + 1,
                                                worksheet=ws)
             column_headers[col].save()
-        # Old SQLAlchemy code:
-        # column_headers = {col: db.ColumnHeader(value=sheet.cell_value(0, col),
-        #                                        col_idx=col + 1)
-        #                   for col in valid_cols}
-
-        pass
-
-        for row in range(1, sheet.nrows):
-            for col in valid_cols[1:]:
-                cell = Cell(content=sheet.cell_value(row, col))
 
         # Build list of Cell objects:
         cells = list()
@@ -117,12 +100,3 @@ class ExcelDigester:
                             worksheet=ws)
                 cell.save()
                 cells.append(cell)
-        # Old SQLAlchemy code:
-        # cells = list()
-        # for row in range(1, sheet.nrows):
-        #     for col in valid_cols[1:]:
-        #         cells.append(db.Cell(content=sheet.cell_value(row, col),
-        #                              row_idx=ipf_numbers[row].row_idx,
-        #                              tag=ipf_numbers[row].tag,
-        #                              col_idx=column_headers[col].col_idx,
-        #                              col_header=column_headers[col].value))
