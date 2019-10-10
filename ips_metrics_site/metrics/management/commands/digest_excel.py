@@ -10,6 +10,7 @@ import os
 
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
+# from django.db import models
 import xlrd
 
 from metrics.models import WorkSheet, Cell, ColumnHeader, IPFNumber  # Doesn't seem like this would work
@@ -33,14 +34,16 @@ class Command(BaseCommand):
             try:
                 excel_digester.digest()
             except OSError as e:
-                self.stdout.write(str(e))
+                self.stdout.write(f"Exception in create: {str(e)}")
 
         if options['print']:
+            # Actually this has nothing to do with Excel at this point. Not a great name, then.
             self.stdout.write("Print called")
             try:
-                pass
-            except:
-                pass
+                for cell in Cell.objects.all():
+                    self.stdout.write(str(cell))
+            except Exception as e:
+                self.stdout.write(f"Exception in print: {str(e)}")
 
 
 class ExcelDigester:

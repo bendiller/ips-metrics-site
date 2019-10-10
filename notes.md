@@ -64,5 +64,9 @@ Not all of these need to be run; some of this is pick-and-choose. Just intended 
 
 - Initialize DB schema: `$ python manage.py migrate`
 
+- Create an admin user: `python managy.py createsuperuser` (then enter new creds)
+
+- 
+
 
 
