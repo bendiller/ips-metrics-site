@@ -45,6 +45,7 @@ Not all of these need to be run; some of this is pick-and-choose. Just intended 
 - Must add <app_name>.urls module to root URLconf:
 
   ```
+  # <site_name>/urls.py
   from django.contrib import admin
   from django.urls import include, path
 
