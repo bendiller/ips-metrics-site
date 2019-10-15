@@ -1,6 +1,8 @@
+from datetime import datetime, timedelta
+
 from django.db import models
 
-from xlrd.xldate import xldate_as_datetime
+from xlrd.xldate import xldate_as_datetime, xldate_from_date_tuple
 
 """
 The goal here is to replicate the DB model that I created in the ips-metrics-public project, which uses SQLAlchemy.
@@ -70,6 +72,52 @@ class Cell(models.Model):
     def date_or_content(self):
         """ Return either datetime object converted from Excel date, or unchanged contents if not a date. """
         if self.is_date():
-            return xldate_as_datetime(int(float(self.content)), 0)
+            return xldate_as_datetime(int(float(self.content)), 0).date()
         else:
             return self.content
+
+    @classmethod
+    def get_next_due(cls, stop_date=datetime.now() + timedelta(weeks=5200),
+                     start_date=datetime.now()):
+
+        stop = xldate_from_date_tuple(stop_date.timetuple()[0:3], 0)
+        start = xldate_from_date_tuple(start_date.timetuple()[0:3], 0)
+
+        # print(f"Start: {start_date} - {start}")
+        # print(f"Cutoff: {stop_date} - {stop}")
+
+        due_date_cells = cls.objects.all() \
+            .filter(col_header__value="Next Procedure Date") \
+            .filter(content__gte=start) \
+            .filter(content__lte=stop)\
+            .order_by('content')
+
+        # List of IPF numbers which have a Next Procedure Date between the start and stop.
+        ipf_numbers = [c.ipf_num.value for c in due_date_cells]  # Should be possible to do this in the query.
+
+        # New query gathering all Cells for the IPF Numbers identified as due between start & stop
+        due_ipfs = cls.objects.all().filter(ipf_num__value__in=ipf_numbers)
+
+        # return due_date_cells
+        # return ipf_numbers
+        return due_ipfs
+
+
+    # @classmethod
+    # def get_next_due(cls, interval_days=30):
+    #     pass
+    #
+    #     cutoff_date = (datetime.now() + timedelta(days=interval_days))
+    #     cutoff = xldate_from_date_tuple(cutoff_date.timetuple()[0:3], 0)
+    #     today = xldate_from_date_tuple(datetime.now().timetuple()[0:3], 0)
+    #     print(f"{cutoff_date} - {cutoff}")
+    #     due_date_cells = cls.objects.all()\
+    #         .filter(col_header__value="Next Procedure Date")\
+    #         .filter(content__gte=today)\
+    #         .filter(content__lte=cutoff).order_by('content')
+    #
+    #     return due_date_cells
+
+    # Goals:
+    # 1. Retrieve a list of cells with "Next Procedure Date" in a certain range (30 day, 90 day)
+    # 2. Retrieve a list of cells by tag (providing relevant details)
