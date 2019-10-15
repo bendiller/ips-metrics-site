@@ -9,6 +9,7 @@ from django.shortcuts import render
 
 # Might also be cool to try to build a pattern that'd return details of partial tags. So /metrics/tags/309
 # would return details for PT522309A, 309B, 525309A, etc. etc.
+from collections import namedtuple
 from datetime import datetime, timedelta
 
 from django.http import HttpResponse
@@ -20,38 +21,49 @@ Cell = apps.get_model("metrics", "Cell")
 def sandbox(request):
     """ Used for testing different ideas and behaviors """
 
+
     out_str = "Metrics Sandbox - for testing out ideas and such.<br>"
 
-    results = Cell.get_next_due(stop_date=datetime.now() + timedelta(days=90))
+    results = Cell.get_next_due(stop_date=datetime.now() + timedelta(days=280))
 
     # Filter just the useful columns:
     col_vals = ["Tag Number", "Description", "Plant", "Next Procedure Date"]
     results = results.filter(col_header__value__in=col_vals).order_by('ipf_num')
 
-    # Convert to a dict indexed by IPF number:
-    ipfs = set([result.ipf_num.value for result in results])
-    table_data = dict()
-    for ipf in ipfs:
-        table_data[ipf] = results.filter(ipf_num__value=ipf)
+    # Define convenience object
+    # (May seriously want to think about creating something that's more universally useful)
+    # Can probably just use dict or something
+    Row = namedtuple('Row', 'ipf_num tag desc plant due_date')
+
+    rows = list()
+    for ipf_num in set([result.ipf_num.value for result in results]):
+        row_cells = results.filter(ipf_num__value=ipf_num)
+        r = Row(ipf_num,
+                row_cells.filter(col_header__value="Tag Number")[0].date_or_content,
+                row_cells.filter(col_header__value="Description")[0].date_or_content,
+                row_cells.filter(col_header__value="Plant")[0].date_or_content,
+                row_cells.filter(col_header__value="Next Procedure Date")[0].date_or_content,
+                )
+        rows.append(r)
 
     # At this point I have two indexes - going to try to write some output with this data:
+    # Build table and header row:
     out_str += "<table border='1'>"
     out_str += "<tr>"
+    out_str += "<td>IPF Number</td>"
     for col_val in col_vals:
         out_str += f"<td>{col_val}</td>"
     out_str += "</tr>"
 
-    for ipf in ipfs:
+    # Build further table contents based on results of query:
+    for row in sorted(rows, key=lambda row: row.due_date):  # Allows for convenient sorting by header
         out_str += "<tr>"
-        for col_val in col_vals:
-            val = table_data[ipf].filter(col_header__value=col_val)[0].date_or_content
+        for i in range(len(Row._fields)):
+            val = row[i]
             out_str += f"<td>{val}</td>"
         out_str += "</tr>"
     out_str += "</table>"
 
-    # for result in results:
-    #     out_str += f"<br>{result}"
-        # out_str += f"<br>{result.ipf_num.value}"
     return HttpResponse(out_str)
 
 # From: https://docs.djangoproject.com/en/2.2/intro/tutorial03/
