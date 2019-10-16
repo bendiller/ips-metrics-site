@@ -1,0 +1,26 @@
+table {
+    border: solid 1px #5A6650;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font: normal 13px Arial, sans-serif;
+}
+
+thead th {
+    background-color: #0E402D;
+    padding: 10px;
+    color: #fff;
+    text-shadow: 1px 1px 1px #000;
+}
+
+tr {
+    background-color: #F6F6F6;
+}
+
+tr:nth-child(even){
+    background-color: #DDDDDD;
+}
+
+tbody td {
+    border: solid 1px #5A6650;
+    padding: 10px;
+}

@@ -54,3 +54,6 @@ def upcoming(request):  # Will want to accept start_ and stop_date eventually, h
 #     return render(request, 'polls/detail.html', {'question': question})
 
 # There's also get_list_or_404() which uses filter() instead of get()
+
+# Check out generic.DetailView as shown here: https://docs.djangoproject.com/en/2.2/intro/tutorial04/
+# This would be useful for pages that link to an individual IPF number or similar

@@ -1,17 +1,21 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'metrics/style.css' %}">
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Upcoming IPS Validations</title>
 </head>
+
 <body>
 {% if rows and col_headers %}
-    <table border="1">
-        <tr>
+    <table>
+        <thead>
             {% for col_header in col_headers %}
-            <td>{{ col_header }}</td>
+            <th>{{ col_header }}</th>
             {% endfor %}
-        </tr>
+        </thead>
         {% for row in rows %}
         <tr>
             {% for k, v in row.items %}
