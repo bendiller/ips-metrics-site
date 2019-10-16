@@ -80,44 +80,26 @@ class Cell(models.Model):
     def get_next_due(cls, stop_date=datetime.now() + timedelta(weeks=5200),
                      start_date=datetime.now()):
 
+        # TODO - This can almost certainly be performed as a single query. I need to learn how to do that.
+
         stop = xldate_from_date_tuple(stop_date.timetuple()[0:3], 0)
         start = xldate_from_date_tuple(start_date.timetuple()[0:3], 0)
 
-        # print(f"Start: {start_date} - {start}")
-        # print(f"Cutoff: {stop_date} - {stop}")
+        latest_ws = WorkSheet.objects.latest('modified_time')
 
         due_date_cells = cls.objects.all() \
+            .filter(worksheet=latest_ws) \
             .filter(col_header__value="Next Procedure Date") \
             .filter(content__gte=start) \
-            .filter(content__lte=stop)\
+            .filter(content__lte=stop) \
             .order_by('content')
 
         # List of IPF numbers which have a Next Procedure Date between the start and stop.
         ipf_numbers = [c.ipf_num.value for c in due_date_cells]  # Should be possible to do this in the query.
 
         # New query gathering all Cells for the IPF Numbers identified as due between start & stop
-        due_ipfs = cls.objects.all().filter(ipf_num__value__in=ipf_numbers)
+        due_ipfs = cls.objects.all().filter(worksheet=latest_ws) \
+            .filter(ipf_num__value__in=ipf_numbers)
 
-        # return due_date_cells
-        # return ipf_numbers
         return due_ipfs
 
-
-    # @classmethod
-    # def get_next_due(cls, interval_days=30):
-    #     pass
-    #
-    #     cutoff_date = (datetime.now() + timedelta(days=interval_days))
-    #     cutoff = xldate_from_date_tuple(cutoff_date.timetuple()[0:3], 0)
-    #     today = xldate_from_date_tuple(datetime.now().timetuple()[0:3], 0)
-    #     print(f"{cutoff_date} - {cutoff}")
-    #     due_date_cells = cls.objects.all()\
-    #         .filter(col_header__value="Next Procedure Date")\
-    #         .filter(content__gte=today)\
-    #         .filter(content__lte=cutoff).order_by('content')
-    #
-    #     return due_date_cells
-
-    # Goals:
-    # 1. Retrieve a list of cells with "Next Procedure Date" in a certain range (30 day, 90 day)
-    # 2. Retrieve a list of cells by tag (providing relevant details)

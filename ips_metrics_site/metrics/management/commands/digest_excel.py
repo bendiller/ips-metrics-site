@@ -57,7 +57,7 @@ class ExcelDigester:
         self.wb_path = fname  # Default path depends on command run from the project (not app) directory.
         # self.logger = logs.config.create_logger(__name__)
 
-    def digest(self):
+    def digest(self):  # TODO - Early exit when input sheet's modified time exists in DB (data already been processed)
         """ Read all data from spreadsheet and save as DB records """
         try:
             timestamp = datetime.fromtimestamp(getmtime(self.wb_path))  # Time the workbook was last modified.
