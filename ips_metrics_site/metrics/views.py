@@ -16,6 +16,8 @@ from django.shortcuts import render
 
 Cell = apps.get_model("metrics", "Cell")
 
+def not_found(request):
+    return HttpResponse('Nothing here yet.')
 
 def sandbox(request):
     """ Used for testing different ideas and behaviors """
