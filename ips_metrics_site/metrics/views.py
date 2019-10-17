@@ -16,8 +16,10 @@ from django.shortcuts import render
 
 Cell = apps.get_model("metrics", "Cell")
 
+
 def not_found(request):
     return HttpResponse('Nothing here yet.')
+
 
 def sandbox(request):
     """ Used for testing different ideas and behaviors """
@@ -27,10 +29,11 @@ def sandbox(request):
 
 
 def upcoming(request, days=30):  # Will want to accept start_ and stop_date eventually, however that's done.
-    next_due = Cell.get_next_due(stop_date=datetime.now() + timedelta(days=days))  # All cells for IPFs coming due
+    stop_date = datetime.now() + timedelta(days=days)
+    next_due = Cell.get_next_due(stop_date=stop_date)  # All cells for IPFs coming due
 
     # Filter just the useful columns:
-    col_headers = ["IPF Number", "Tag Number", "Description", "Plant", "Next Procedure Date"]
+    col_headers = ["IPF Number", "Tag Number", "Description", "Plant", "Next Procedure Date", "Days Until Due"]
     next_due = next_due.filter(col_header__value__in=col_headers[1:]).order_by('ipf_num')
 
     rows = list()
@@ -38,7 +41,8 @@ def upcoming(request, days=30):  # Will want to accept start_ and stop_date even
         row_cells = next_due.filter(ipf_num__value=ipf_num)
         r = {"IPF Number": ipf_num}
         r.update({col_header: row_cells.filter(col_header__value=col_header)[0].date_or_content
-                  for col_header in col_headers[1:]})
+                  for col_header in col_headers[1:-1]})
+        r.update({"Days Until Due": (r["Next Procedure Date"] - datetime.now().date()).days})
 
         rows.append(r)
 
