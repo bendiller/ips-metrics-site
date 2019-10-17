@@ -10,17 +10,15 @@
 }
 
 /* Clear floats after the columns */
+/*
 .row:after {
   content: "";
   display: table;
   clear: both;
 
 }
+*/
 
-/*
-#sidebar {
-    margin-right: 30px;
-}*/
 
 h3 {
     margin-top: 0;
