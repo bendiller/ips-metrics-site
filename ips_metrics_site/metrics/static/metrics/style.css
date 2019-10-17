@@ -4,9 +4,23 @@
     margin: 30px;
 }
 
+.column {
+    float: left;
+    margin: 30px 30px 0px 0px;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+
+}
+
+/*
 #sidebar {
     margin-right: 30px;
-}
+}*/
 
 h3 {
     margin-top: 0;

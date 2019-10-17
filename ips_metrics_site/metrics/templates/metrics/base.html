@@ -7,8 +7,8 @@
     <title>{% block title %}IPS Metrics{% endblock %}</title>
 </head>
 <body>
-<div class="flex-container">
-    <div id="sidebar">
+<div>
+    <div id="sidebar" class="column">
         {% block sidebar %}
         <a href="/metrics/upcoming/30">Due Within: 30 days</a><br>
         <a href="/metrics/upcoming/60">Due Within: 60 days</a><br>
@@ -17,7 +17,7 @@
         {% endblock %}
     </div>
 
-    <div id="content">
+    <div id="content" class="column">
         {% block content %}{% endblock %}
     </div>
 </div>
