@@ -1,5 +1,11 @@
-.main_content {
+.flex-container {
+    display: flex;
+    flex-direction: row;
     margin: 30px;
+}
+
+#sidebar {
+    margin-right: 30px;
 }
 
 table {

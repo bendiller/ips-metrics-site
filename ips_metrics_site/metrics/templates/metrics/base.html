@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'metrics/style.css' %}">
+    <meta charset="UTF-8">
+    <title>{% block title %}IPS Metrics{% endblock %}</title>
+</head>
+<body>
+<div class="flex-container">
+    <div id="sidebar">
+        {% block sidebar %}
+        <a href="/">Home</a><br>
+        <a href="/upcoming/">Upcoming</a>
+        {% endblock %}
+    </div>
+
+    <div id="content">
+        {% block content %}{% endblock %}
+    </div>
+</div>
+</body>
+</html>

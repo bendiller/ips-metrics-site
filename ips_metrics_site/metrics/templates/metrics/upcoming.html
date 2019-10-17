@@ -1,33 +1,29 @@
-{% load static %}
+{% extends "metrics/base.html" %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'metrics/style.css' %}">
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Upcoming IPS Validations</title>
-</head>
+{% block title %} Upcoming IPS Validations {% endblock %}
 
-<body>
-<div class="main_content">
-{% if rows and col_headers %}
+{% block content %}
+    {% if rows and col_headers %}
     <table>
         <thead>
-            {% for col_header in col_headers %}
-            <th>{{ col_header }}</th>
-            {% endfor %}
+            <tr>
+                {% for col_header in col_headers %}
+                <th>{{ col_header }}</th>
+                {% endfor %}
+            </tr>
         </thead>
-        {% for row in rows %}
-        <tr>
-            {% for k, v in row.items %}
-            <td>{{ v }}</td>
+        <tbody>
+            {% for row in rows %}
+            <tr>
+                {% for k, v in row.items %}
+                <td>{{ v }}</td>
+                {% endfor %}
+            </tr>
             {% endfor %}
-        </tr>
-        {% endfor %}
+        </tbody>
     </table>
-{% else %}
+
+    {% else %}
     <p>No results returned.</p>
-{% endif %}
-</div>
-</body>
-</html>
+    {% endif %}
+{% endblock %}
