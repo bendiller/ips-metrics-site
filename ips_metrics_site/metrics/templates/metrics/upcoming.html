@@ -3,27 +3,28 @@
 {% block title %} Upcoming IPS Validations {% endblock %}
 
 {% block content %}
-    {% if rows and col_headers %}
-    <table>
-        <thead>
-            <tr>
-                {% for col_header in col_headers %}
-                <th>{{ col_header }}</th>
-                {% endfor %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for row in rows %}
-            <tr>
-                {% for k, v in row.items %}
-                <td>{{ v }}</td>
-                {% endfor %}
-            </tr>
+<h3>IPS Validations Coming Due</h3>
+{% if rows and col_headers %}
+<table>
+    <thead>
+        <tr>
+            {% for col_header in col_headers %}
+            <th>{{ col_header }}</th>
             {% endfor %}
-        </tbody>
-    </table>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in rows %}
+        <tr>
+            {% for k, v in row.items %}
+            <td>{{ v }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
-    {% else %}
-    <p>No results returned.</p>
-    {% endif %}
+{% else %}
+<p>Nothing due within the next {{days}} days.</p>
+{% endif %}
 {% endblock %}

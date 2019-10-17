@@ -10,8 +10,10 @@
 <div class="flex-container">
     <div id="sidebar">
         {% block sidebar %}
-        <a href="/">Home</a><br>
-        <a href="/metrics/upcoming">Upcoming</a>
+        <a href="/metrics/upcoming/30">Due Within: 30 days</a><br>
+        <a href="/metrics/upcoming/60">Due Within: 60 days</a><br>
+        <a href="/metrics/upcoming/90">Due Within: 90 days</a><br>
+        <a href="/metrics/upcoming/365">Due Within: 365 days</a><br>
         {% endblock %}
     </div>
 

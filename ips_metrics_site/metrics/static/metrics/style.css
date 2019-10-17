@@ -8,6 +8,10 @@
     margin-right: 30px;
 }
 
+h3 {
+    margin-top: 0;
+}
+
 table {
     border: solid 1px #5A6650;
     border-collapse: collapse;

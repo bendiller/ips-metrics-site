@@ -49,7 +49,7 @@ def upcoming(request, days=30):  # Will want to accept start_ and stop_date even
     # Sort rows (may be dynamic / user-configurable later):
     rows = sorted(rows, key=lambda row: row["Days Until Due"])
 
-    return render(request, 'metrics/upcoming.html', {'rows': rows, 'col_headers': col_headers})
+    return render(request, 'metrics/upcoming.html', {'rows': rows, 'col_headers': col_headers, 'days': days})
 
 # From: https://docs.djangoproject.com/en/2.2/intro/tutorial03/
 # Will want to use the following shortcuts for dealing with failures to retrieve DB items:
