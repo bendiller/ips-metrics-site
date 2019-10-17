@@ -26,8 +26,8 @@ def sandbox(request):
     return HttpResponse(out_str)
 
 
-def upcoming(request):  # Will want to accept start_ and stop_date eventually, however that's done.
-    next_due = Cell.get_next_due(stop_date=datetime.now() + timedelta(days=90))  # All cells for IPFs coming due
+def upcoming(request, days=30):  # Will want to accept start_ and stop_date eventually, however that's done.
+    next_due = Cell.get_next_due(stop_date=datetime.now() + timedelta(days=days))  # All cells for IPFs coming due
 
     # Filter just the useful columns:
     col_headers = ["IPF Number", "Tag Number", "Description", "Plant", "Next Procedure Date"]
