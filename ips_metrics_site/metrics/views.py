@@ -33,7 +33,7 @@ def upcoming(request, days=30):  # Will want to accept start_ and stop_date even
     next_due = Cell.get_next_due(stop_date=stop_date)  # All cells for IPFs coming due
 
     # Filter just the useful columns:
-    col_headers = ["IPF Number", "Tag Number", "Description", "Plant", "Next Procedure Date", "Days Until Due"]
+    col_headers = ["IPF Number", "Tag Number", "Type", "Description", "Plant", "Next Procedure Date", "Days Until Due"]
     next_due = next_due.filter(col_header__value__in=col_headers[1:]).order_by('ipf_num')
 
     rows = list()
@@ -47,6 +47,8 @@ def upcoming(request, days=30):  # Will want to accept start_ and stop_date even
         rows.append(r)
 
     # Sort rows (may be dynamic / user-configurable later):
+    # Let's also see if "cascading" sorts improve the output:
+    rows = sorted(rows, key=lambda row: row["IPF Number"])
     rows = sorted(rows, key=lambda row: row["Days Until Due"])
 
     return render(request, 'metrics/upcoming.html', {'rows': rows, 'col_headers': col_headers, 'days': days})
