@@ -11,8 +11,10 @@
 from datetime import datetime, timedelta
 
 from django.apps import apps
+from django.core.exceptions import FieldError
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.views import View
 
 Cell = apps.get_model("metrics", "Cell")
 
@@ -28,30 +30,51 @@ def sandbox(request):
     return HttpResponse(out_str)
 
 
-def upcoming(request, days=30):  # Will want to accept start_ and stop_date eventually, however that's done.
-    stop_date = datetime.now() + timedelta(days=days)
-    next_due = Cell.get_next_due(stop_date=stop_date)  # All cells for IPFs coming due
-
-    # Filter just the useful columns:
+class Upcoming(View):
+    # TODO: Make the column headers links with asc/desc
+    # TODO: Make sure the links at left keep the preferred sorting
     col_headers = ["IPF Number", "Tag Number", "Type", "Description", "Plant", "Next Procedure Date", "Days Until Due"]
-    next_due = next_due.filter(col_header__value__in=col_headers[1:]).order_by('ipf_num')
+    sort_fields = {s.lower().replace(" ", ""): s for s in col_headers}  # Just a convenience object for sorting
 
-    rows = list()
-    for ipf_num in set([cell.ipf_num.value for cell in next_due]):
-        row_cells = next_due.filter(ipf_num__value=ipf_num)
-        r = {"IPF Number": ipf_num}
-        r.update({col_header: row_cells.filter(col_header__value=col_header)[0].date_or_content
-                  for col_header in col_headers[1:-1]})
-        r.update({"Days Until Due": (r["Next Procedure Date"] - datetime.now().date()).days})
+    def get(self, request, days=30, sort_field="", reverse=False):  # Will want to accept start_ and stop_date eventually, however that's done.
+        if sort_field is not "" and sort_field not in self.sort_fields:
+            raise FieldError(f"{sort_field} is not a valid field for sorting.")  # Can't sort by a non-existent field.
+            # I wonder if this should just 404 instead. # TODO Test this behavior
 
-        rows.append(r)
+        stop_date = datetime.now() + timedelta(days=days)
+        next_due = Cell.get_next_due(stop_date=stop_date)  # All cells for IPFs coming due
 
-    # Sort rows (may be dynamic / user-configurable later):
-    # Let's also see if "cascading" sorts improve the output:
-    rows = sorted(rows, key=lambda row: row["IPF Number"])
-    rows = sorted(rows, key=lambda row: row["Days Until Due"])
+        # Filter just the useful columns:
+        next_due = next_due.filter(col_header__value__in=self.col_headers[1:]).order_by('ipf_num')
 
-    return render(request, 'metrics/upcoming.html', {'rows': rows, 'col_headers': col_headers, 'days': days})
+        rows = list()
+        for ipf_num in set([cell.ipf_num.value for cell in next_due]):
+            row_cells = next_due.filter(ipf_num__value=ipf_num)
+            r = {"IPF Number": ipf_num}
+            r.update({col_header: row_cells.filter(col_header__value=col_header)[0].date_or_content
+                      for col_header in self.col_headers[1:-1]})
+            r.update({"Days Until Due": (r["Next Procedure Date"] - datetime.now().date()).days})
+
+            rows.append(r)
+
+        # Sort rows (may be dynamic / user-configurable later):
+        # Default sorting that occurs before any user-specified sorting. May not want to keep this; not sure
+        rows = sorted(rows, key=lambda row: row["IPF Number"])
+        rows = sorted(rows, key=lambda row: row["Days Until Due"])
+
+        if sort_field:
+            rows = sorted(rows, key=lambda row: row[self.sort_fields[sort_field]], reverse=reverse)
+
+        # Another option for this might look like:
+        # orderbyList = ['check-in']  # default order
+        #
+        # if request.GET.getlist('order'):
+        #     orderbyList = request.GET.getlist('order')
+        #
+        # modelclassinstance.objects.all().order_by(*orderbyList)
+
+        # TODO Determine if self.col_headers needs to be returned anymore - probably not!
+        return render(request, 'metrics/upcoming.html', {'rows': rows, 'col_headers': self.col_headers, 'days': days})
 
 # From: https://docs.djangoproject.com/en/2.2/intro/tutorial03/
 # Will want to use the following shortcuts for dealing with failures to retrieve DB items:
