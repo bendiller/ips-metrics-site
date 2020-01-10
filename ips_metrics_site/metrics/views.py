@@ -9,6 +9,7 @@
 # would return details for PT522309A, 309B, 525309A, etc. etc.
 
 from datetime import datetime, timedelta
+import json
 
 from django.apps import apps
 from django.core.exceptions import FieldError
@@ -74,6 +75,37 @@ class Upcoming(View):
 
         # TODO Determine if self.col_headers needs to be returned anymore - probably not!
         return render(request, 'metrics/upcoming.html', {'rows': rows, 'col_headers': self.col_headers, 'days': days})
+
+
+class IPFDetail(View):
+    def get(self, request, ipf_num, cmd=''):
+        return HttpResponse(f"Your IPF number is: {ipf_num}")
+
+
+        # This is probably bad form, but it's just a temporary measure to load from the JSON files previously collected,
+        # so that I can get a prototype for this View going.
+        # if cmd == "load":
+        #     # Look for JSON file corresponding to this IPF num:
+        #     import os
+        #     from django.db import IntegrityError
+        #     DocsBlob = apps.get_model("metrics", "DocsBlob")
+        #     IPFNumber = apps.get_model("metrics", "IPFNumber")
+        #     fpath = os.path.join(r"C:\ProgProjects\ips-folder-crawler", f"{ipf_num}.json")
+        #     if os.path.isfile(fpath):
+        #         with open(fpath, 'r') as f:
+        #             content = json.load(f)
+        #         dblob = DocsBlob(ipf_num=IPFNumber.objects.filter(value=ipf_num)[0], content=content)
+        #         try:
+        #             dblob.save()
+        #         except IntegrityError:
+        #             return HttpResponse(f"Contents of this JSON file already stored in DB!")
+        #         return HttpResponse(json.dumps(content, indent=2))
+        #
+        #     else:
+        #         return HttpResponse(f"Could not locate JSON file at path: f{fpath}")
+        #
+        # else:
+        #     return HttpResponse(f"Your IPF Number is: {ipf_num}")
 
 # From: https://docs.djangoproject.com/en/2.2/intro/tutorial03/
 # Will want to use the following shortcuts for dealing with failures to retrieve DB items:
