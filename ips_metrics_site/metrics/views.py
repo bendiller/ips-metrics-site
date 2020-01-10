@@ -31,14 +31,13 @@ def sandbox(request):
 
 
 class Upcoming(View):
-    # TODO: Make the column headers links with asc/desc
-    # TODO: Make sure the links at left keep the preferred sorting
+    # TODO - Should I use Last Procedure Date somehow too? This whole thing breaks if "Next Procedure Date" is wrong
     col_headers = ["IPF Number", "Tag Number", "Type", "Description", "Plant", "Next Procedure Date", "Days Until Due"]
     sort_fields = {s.lower().replace(" ", ""): s for s in col_headers}  # Just a convenience object for sorting
 
-    def get(self, request, days=30, sort_field="", reverse=False):  # Will want to accept start_ and stop_date eventually, however that's done.
-        if sort_field is not "" and sort_field not in self.sort_fields:
-            raise FieldError(f"{sort_field} is not a valid field for sorting.")  # Can't sort by a non-existent field.
+    def get(self, request, days=30):  # Will want to accept start_ and stop_date eventually, however that's done.
+        # if sort_field is not "" and sort_field not in self.sort_fields:
+        #     raise FieldError(f"{sort_field} is not a valid field for sorting.")  # Can't sort by a non-existent field.
             # I wonder if this should just 404 instead. # TODO Test this behavior
 
         stop_date = datetime.now() + timedelta(days=days)
@@ -62,8 +61,8 @@ class Upcoming(View):
         rows = sorted(rows, key=lambda row: row["IPF Number"])
         rows = sorted(rows, key=lambda row: row["Days Until Due"])
 
-        if sort_field:
-            rows = sorted(rows, key=lambda row: row[self.sort_fields[sort_field]], reverse=reverse)
+        # if sort_field:
+        #     rows = sorted(rows, key=lambda row: row[self.sort_fields[sort_field]], reverse=reverse)
 
         # Another option for this might look like:
         # orderbyList = ['check-in']  # default order

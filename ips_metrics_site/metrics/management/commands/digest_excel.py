@@ -20,7 +20,7 @@ IPFNumber = apps.get_model("metrics", "IPFNumber")
 WorkSheet = apps.get_model("metrics", "WorkSheet")
 
 
-
+# Primary command is "python manage.py digest_excel --create", though I don't remember how 'digest_excel' is configured as the command.
 class Command(BaseCommand):
     def add_arguments(self, parser):
         # Named optional arguments:

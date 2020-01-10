@@ -5,7 +5,22 @@
 {% block content %}
 <h3>IPS Validations Coming Due</h3>
 {% if rows and col_headers %}
-<table>
+
+
+
+{% block javascript %}
+    <script>
+        window.onload = function(){
+            TableSorter.makeSortable(document.getElementById("upcoming_items"));
+        };
+    </script>
+{% endblock %}
+
+
+
+
+
+<table id="upcoming_items">
     <thead>
         <tr>
             {% for col_header in col_headers %}
