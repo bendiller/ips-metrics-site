@@ -103,3 +103,12 @@ class Cell(models.Model):
 
         return due_ipfs
 
+
+class DocsBlob(models.Model):
+    """
+    Documentation available for each IPF is highly variable, and never needs querying individually.
+    Because of this, for each IPF, a simple block of JSON containing locations and names of all related documents is
+    sufficient. If a case for more granular indexing presents itself later, this can be modified.
+    """
+    ipf_num = models.ForeignKey(IPFNumber, on_delete=models.CASCADE)
+    content = models.TextField()  # Not validating at this point, and may never, but this should always be JSON.

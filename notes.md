@@ -61,9 +61,16 @@ Not all of these need to be run; some of this is pick-and-choose. Just intended 
 
 - Define DB models in <app_name>/models.py
 
-- Use `makemigrations` to update the SQL code used to build DB schema: `$ python manage.py makemigrations <appname>`
+- Use `makemigrations` to update the SQL code used to build DB schema: `$ python manage.py makemigrations <appname>`<br/>
+To give the migration file a custom name, use `$ python manage.py makemigrations <appname> --name <custom_migration_name>`
 
-- Initialize DB schema: `$ python manage.py migrate`
+- Initialize DB schema: `$ python manage.py migrate` (these steps also allow updating models)
+
+- Show migrations: `$ python manage.py showmigrations`
+
+- Revert to a previous migration: `$ python manage.py migrate <app_name> <migration_name>`<br/>
+(for example, `$ python manage.py migrate metrics 0001_initial`)<br/>
+It should be noted, however, that the migration still exists and will be applied when `migrate` command is next run.
 
 - Create an admin user: `python managy.py createsuperuser` (then enter new creds)
 
