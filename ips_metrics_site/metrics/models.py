@@ -110,8 +110,6 @@ class DocsBlob(models.Model):
     Because of this, for each IPF, a simple block of JSON containing locations and names of all related documents is
     sufficient. If a case for more granular indexing presents itself later, this can be modified.
     """
-    class Meta:
-        unique_together = (('ipf_num', 'content'), )
 
-    ipf_num = models.ForeignKey(IPFNumber, on_delete=models.CASCADE)
+    ipf_num = models.ForeignKey(IPFNumber, unique=True, on_delete=models.CASCADE)
     content = models.TextField()  # Not validating at this point, and may never, but this should always be JSON.
