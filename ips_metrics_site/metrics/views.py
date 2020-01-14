@@ -12,12 +12,14 @@ from datetime import datetime, timedelta
 import json
 
 from django.apps import apps
-from django.core.exceptions import FieldError
+from django.core.exceptions import FieldError, ObjectDoesNotExist
+from django.db import IntegrityError
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
 
 Cell = apps.get_model("metrics", "Cell")
+DocsBlob = apps.get_model("metrics", "DocsBlob")
 
 
 def not_found(request):
@@ -79,33 +81,42 @@ class Upcoming(View):
 
 class IPFDetail(View):
     def get(self, request, ipf_num, cmd=''):
-        return HttpResponse(f"Your IPF number is: {ipf_num}")
+        # TODO - just a temporary measure to load from the JSON files previously collected, so that I can get a prototype for this View going.
+        if cmd == "load":
+            return HttpResponse(self.load(ipf_num))
 
+        try:
+            docs_blob = DocsBlob.objects.get(ipf_num=ipf_num)
 
-        # This is probably bad form, but it's just a temporary measure to load from the JSON files previously collected,
-        # so that I can get a prototype for this View going.
-        # if cmd == "load":
-        #     # Look for JSON file corresponding to this IPF num:
-        #     import os
-        #     from django.db import IntegrityError
-        #     DocsBlob = apps.get_model("metrics", "DocsBlob")
-        #     IPFNumber = apps.get_model("metrics", "IPFNumber")
-        #     fpath = os.path.join(r"C:\ProgProjects\ips-folder-crawler", f"{ipf_num}.json")
-        #     if os.path.isfile(fpath):
-        #         with open(fpath, 'r') as f:
-        #             content = json.load(f)
-        #         dblob = DocsBlob(ipf_num=IPFNumber.objects.filter(value=ipf_num)[0], content=content)
-        #         try:
-        #             dblob.save()
-        #         except IntegrityError:
-        #             return HttpResponse(f"Contents of this JSON file already stored in DB!")
-        #         return HttpResponse(json.dumps(content, indent=2))
-        #
-        #     else:
-        #         return HttpResponse(f"Could not locate JSON file at path: f{fpath}")
-        #
-        # else:
-        #     return HttpResponse(f"Your IPF Number is: {ipf_num}")
+        except ObjectDoesNotExist:
+            return HttpResponse(f"IPF #{ipf_num} has not had details loaded yet.")
+        docs_blob = eval(docs_blob.content)
+
+        content = dict()
+        content["ipf_num"] = ipf_num
+        content["tag"] = docs_blob["tag"]  # Should probably be a DB lookup, eventually.
+        content["site"] = docs_blob["site"]
+        content["documents"] = docs_blob["documents"]
+
+        return render(request, 'metrics/ipf-detail.html', content)
+
+    def load(self, ipf_num):
+        # Look for JSON file corresponding to this IPF num:
+        import os
+        fpath = os.path.join(r"C:\ProgProjects\ips-folder-crawler", f"{ipf_num}.json")
+        if os.path.isfile(fpath):
+            with open(fpath, 'r') as f:
+                content = json.load(f)
+            docs_blob = DocsBlob(ipf_num=ipf_num, content=content)
+            try:
+                docs_blob.save()
+            except IntegrityError:
+                return f"JSON contents for IPF #{ipf_num} already stored in DB!"
+            return f"Successfully loaded JSON for IPF #{ipf_num} into DB."
+
+        else:
+            return f"Could not locate JSON file for IPF #{ipf_num} at path: f{fpath}"
+
 
 # From: https://docs.djangoproject.com/en/2.2/intro/tutorial03/
 # Will want to use the following shortcuts for dealing with failures to retrieve DB items:

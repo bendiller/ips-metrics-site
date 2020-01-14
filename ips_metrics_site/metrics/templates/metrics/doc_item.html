@@ -1,0 +1,12 @@
+{% for key, val in doc_items.items %}
+<li>
+    {% if not val.is_file %}
+    <a href="file:///{{ val.full_path }}/">{{ key }}</a>
+    <ul>
+        {% include "metrics/doc_item.html" with doc_items=val.sub_paths %}
+    </ul>
+    {% else %}
+    <a href="file:///{{ val.full_path }}">{{ key }}</a>
+    {% endif %}
+</li>
+{% endfor %}
