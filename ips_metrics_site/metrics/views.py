@@ -20,6 +20,8 @@ from django.views import View
 
 Cell = apps.get_model("metrics", "Cell")
 DocsBlob = apps.get_model("metrics", "DocsBlob")
+IPFNumber = apps.get_model("metrics", "IPFNumber")
+WorkSheet = apps.get_model("metrics", "WorkSheet")
 
 
 def not_found(request):
@@ -31,6 +33,24 @@ def sandbox(request):
     out_str = "Metrics Sandbox - for testing out ideas and such.<br>"
 
     return HttpResponse(out_str)
+
+
+def load(ipf_num):
+    # Look for JSON file corresponding to this IPF num:
+    import os
+    fpath = os.path.join(r"C:\ProgProjects\ips-folder-crawler", f"{ipf_num}.json")
+    if os.path.isfile(fpath):
+        with open(fpath, 'r') as f:
+            content = json.load(f)
+        docs_blob = DocsBlob(ipf_num=ipf_num, content=content)
+        try:
+            docs_blob.save()
+        except IntegrityError:
+            return f"JSON contents for IPF #{ipf_num} already stored in DB!"
+        return f"Successfully loaded JSON for IPF #{ipf_num} into DB."
+
+    else:
+        return f"Could not locate JSON file for IPF #{ipf_num} at path: {fpath}"
 
 
 class Upcoming(View):
@@ -83,7 +103,7 @@ class IPFDetail(View):
     def get(self, request, ipf_num, cmd=''):
         # TODO - just a temporary measure to load from the JSON files previously collected, so that I can get a prototype for this View going.
         if cmd == "load":
-            return HttpResponse(self.load(ipf_num))
+            return HttpResponse(load(ipf_num))
 
         try:
             docs_blob = DocsBlob.objects.get(ipf_num=ipf_num)
@@ -100,22 +120,20 @@ class IPFDetail(View):
 
         return render(request, 'metrics/ipf-detail.html', content)
 
-    def load(self, ipf_num):
-        # Look for JSON file corresponding to this IPF num:
-        import os
-        fpath = os.path.join(r"C:\ProgProjects\ips-folder-crawler", f"{ipf_num}.json")
-        if os.path.isfile(fpath):
-            with open(fpath, 'r') as f:
-                content = json.load(f)
-            docs_blob = DocsBlob(ipf_num=ipf_num, content=content)
-            try:
-                docs_blob.save()
-            except IntegrityError:
-                return f"JSON contents for IPF #{ipf_num} already stored in DB!"
-            return f"Successfully loaded JSON for IPF #{ipf_num} into DB."
 
-        else:
-            return f"Could not locate JSON file for IPF #{ipf_num} at path: f{fpath}"
+class IPFDetailLoader(View):
+    def get(self, request):
+        """Temporary View for loading all collected JSON data about IPF documents into DB."""
+        results = ""
+        latest_ws = WorkSheet.objects.latest('modified_time')
+        ipf_numbers = [i.value for i in IPFNumber.objects.all().filter(worksheet=latest_ws)]
+        for ipf_num in ipf_numbers:
+            results += f"<li>{ipf_num} | {load(ipf_num)}</li>"
+
+        return HttpResponse(f"<ul>{results}</ul>")
+
+
+
 
 
 # From: https://docs.djangoproject.com/en/2.2/intro/tutorial03/
