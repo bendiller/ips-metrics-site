@@ -111,5 +111,10 @@ class DocsBlob(models.Model):
     sufficient. If a case for more granular indexing presents itself later, this can be modified.
     """
 
-    ipf_num = models.ForeignKey(IPFNumber, unique=True, on_delete=models.CASCADE)
+    # I had initially used a ForeignKey here, but while the "value" field of an IPFNumber record contains the actual
+    # IPF number, this is not guaranteed to be unique, because it's tied to an instance of the WorkSheet. On the other
+    # hand, these DocsBlob objects are not tied to WorkSheet instances, and will probably be unique by "ipf_num".
+    # For now, I think I'll run this without a ForeignKey.
+
+    ipf_num = models.PositiveSmallIntegerField(unique=True)
     content = models.TextField()  # Not validating at this point, and may never, but this should always be JSON.
