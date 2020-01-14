@@ -4,8 +4,8 @@
 
 {% block content %}
 <h1>IPF #{{ ipf_num }} - {{ tag }}</h1>
-<h3>Documents</h3>
-<ul>
+<h3 id="doc_list_header">Documents</h3>
+<ul class="doc_list">
     {% include "metrics/doc_item.html" with doc_items=documents %}
 </ul>
 

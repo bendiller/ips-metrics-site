@@ -3,6 +3,7 @@
 <head>
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'metrics/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'metrics/doc_list.css' %}">
     <meta charset="UTF-8">
     <title>{% block title %}IPS Metrics{% endblock %}</title>
 </head>
@@ -10,6 +11,7 @@
 <div>
     <div id="sidebar" class="column">
         {% block sidebar %}
+        <h3>Upcoming Validations</h3>
         <a href="/metrics/upcoming/30">Due Within: 30 days</a><br>
         <a href="/metrics/upcoming/60">Due Within: 60 days</a><br>
         <a href="/metrics/upcoming/90">Due Within: 90 days</a><br>
