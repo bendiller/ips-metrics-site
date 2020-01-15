@@ -56,7 +56,8 @@ var TableSorter = {
             for (i=0; i<tr.length; i++) {
                 val = tr[i].cells[col].textContent;
                 // console.log("Val: " + val + " parsed as date: " + Date.parse(val));
-                if (Number.isNaN(Date.parse(val))) {
+                //if (Number.isNaN(Date.parse(val))) {
+                if (isNaN(Date.parse(val))) {
                     isDate = false;
                     break;
                 }
