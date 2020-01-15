@@ -1,0 +1,19 @@
+{% extends "metrics/dev/base.html" %}
+
+{% block title %} IPF #{{ ipf_num }} - {{ tag }} {% endblock %}
+
+{% block content %}
+<h1>IPF #{{ ipf_num }} - {{ tag }}</h1>
+<h3 id="doc_list_header">Documents</h3>
+<ul class="doc_list">
+    {% include "metrics/dev/doc_item.html" with doc_items=documents %}
+</ul>
+
+{# {% for item in documents.items %} #}
+
+
+    {# {% if not item.is_file %} #}
+        {# {{ item }}<br> #}
+    {# {% endif %} #}
+{# {% endfor %} #}
+{% endblock %}

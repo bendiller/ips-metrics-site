@@ -57,6 +57,7 @@ class Upcoming(View):
     # TODO - Should I use Last Procedure Date somehow too? This whole thing breaks if "Next Procedure Date" is wrong
     col_headers = ["IPF Number", "Tag Number", "Type", "Description", "Plant", "Next Procedure Date", "Days Until Due"]
     sort_fields = {s.lower().replace(" ", ""): s for s in col_headers}  # Just a convenience object for sorting
+    template = 'metrics/upcoming.html'
 
     def get(self, request, days=30):  # Will want to accept start_ and stop_date eventually, however that's done.
         # if sort_field is not "" and sort_field not in self.sort_fields:
@@ -96,10 +97,11 @@ class Upcoming(View):
         # modelclassinstance.objects.all().order_by(*orderbyList)
 
         # TODO Determine if self.col_headers needs to be returned anymore - probably not!
-        return render(request, 'metrics/upcoming.html', {'rows': rows, 'col_headers': self.col_headers, 'days': days})
+        return render(request, self.template, {'rows': rows, 'col_headers': self.col_headers, 'days': days})
 
 
 class IPFDetail(View):
+    template = 'metrics/ipf-detail.html'
     def get(self, request, ipf_num, cmd=''):
         # TODO - just a temporary measure to load from the JSON files previously collected, so that I can get a prototype for this View going.
         if cmd == "load":
@@ -118,7 +120,7 @@ class IPFDetail(View):
         content["site"] = docs_blob["site"]
         content["documents"] = docs_blob["documents"]
 
-        return render(request, 'metrics/ipf-detail.html', content)
+        return render(request, self.template, content)
 
 
 class IPFDetailLoader(View):
@@ -133,7 +135,14 @@ class IPFDetailLoader(View):
         return HttpResponse(f"<ul>{results}</ul>")
 
 
+class UpcomingDev(Upcoming):
+    """Simple approach to providing a dev-mode view that uses a different template"""
+    template = 'metrics/dev/upcoming.html'
 
+
+class IPFDetailDev(IPFDetail):
+    """Simple approach to providing a dev-mode view that uses a different template"""
+    template = 'metrics/dev/ipf-detail.html'
 
 
 # From: https://docs.djangoproject.com/en/2.2/intro/tutorial03/

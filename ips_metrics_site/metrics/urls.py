@@ -9,4 +9,7 @@ urlpatterns = [
     path('ipf/<int:ipf_num>', views.IPFDetail.as_view(), name='ipf-detail'),
     path('ipf/<int:ipf_num>/<str:cmd>', views.IPFDetail.as_view(), name='ipf-detail'),
     path('ipf-detail-loader', views.IPFDetailLoader.as_view(), name='ipf-detail-loader'),
+
+    path('upcoming-dev/<int:days>', views.UpcomingDev.as_view(), name='upcoming-dev'),
+    path('ipf-dev/<int:ipf_num>', views.IPFDetailDev.as_view(), name='ipf-detail-dev'),
 ]
