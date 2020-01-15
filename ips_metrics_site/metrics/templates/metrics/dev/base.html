@@ -1,17 +1,22 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="global xlarge large">
 <head>
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'metrics/dev/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'metrics/dev/skel.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'metrics/dev/style-xlarge.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'metrics/dev/doc_list.css' %}">
     <meta charset="UTF-8">
     <title>{% block title %}IPS Metrics{% endblock %}</title>
 </head>
-<body>
-<div>
-    <div id="sidebar" class="column">
+<body id="top">
+<section id="main" class="wrapper style1">
+    <header class="major">{% block header %} {% endblock %}</header>
+<div class="container big">
+<div class="row">
+    <div class="2u">
         {% block sidebar %}
-        <h3>Upcoming Validations</h3>
+        <h3>Upcoming - by Due Date</h3>
         <a href="/metrics/upcoming/30">Due Within: 30 days</a><br>
         <a href="/metrics/upcoming/60">Due Within: 60 days</a><br>
         <a href="/metrics/upcoming/90">Due Within: 90 days</a><br>
@@ -19,10 +24,12 @@
         {% endblock %}
     </div>
 
-    <div id="content" class="column">
+    <div class="10u skel-cell-important">
         {% block content %}{% endblock %}
     </div>
 </div>
+</div>
+</section>
 <script src="{% static 'metrics/app.js' %}"></script>
 {% block javascript %}{% endblock %}
 </body>
