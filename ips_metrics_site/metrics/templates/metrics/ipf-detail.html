@@ -1,12 +1,12 @@
-{% extends "metrics/base.html" %}
+{% extends "metrics/dev/base.html" %}
 
 {% block title %} IPF #{{ ipf_num }} - {{ tag }} {% endblock %}
+{% block header %}<h2>IPF #{{ ipf_num }} - {{ tag }}</h2> {% endblock %}
 
 {% block content %}
-<h1>IPF #{{ ipf_num }} - {{ tag }}</h1>
 <h3 id="doc_list_header">Documents</h3>
 <ul class="doc_list">
-    {% include "metrics/doc_item.html" with doc_items=documents %}
+    {% include "metrics/dev/doc_item.html" with doc_items=documents %}
 </ul>
 
 {# {% for item in documents.items %} #}
