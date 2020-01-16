@@ -1,0 +1,9 @@
+ul.nav {
+    text-align: center;
+    float: none;
+    margin-bottom: 1em;
+}
+
+ul.nav li{
+    display: inline-block;
+}
