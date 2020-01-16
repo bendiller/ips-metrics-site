@@ -19,6 +19,7 @@ from django.shortcuts import render
 from django.views import View
 
 Cell = apps.get_model("metrics", "Cell")
+ColumnHeader = apps.get_model("metrics", "ColumnHeader")
 DocsBlob = apps.get_model("metrics", "DocsBlob")
 IPFNumber = apps.get_model("metrics", "IPFNumber")
 WorkSheet = apps.get_model("metrics", "WorkSheet")
@@ -119,6 +120,27 @@ class IPFDetail(View):
         content["tag"] = docs_blob["tag"]  # Should probably be a DB lookup, eventually.
         content["site"] = docs_blob["site"]
         content["documents"] = docs_blob["documents"]
+
+        latest_ws = WorkSheet.objects.latest('modified_time')
+        ipf_num_record = IPFNumber.objects.all().filter(worksheet=latest_ws)[0]
+        desc_col_header = ColumnHeader.objects.all().filter(value="Description",
+                                                            worksheet=latest_ws)[0]
+        content["description"] = Cell.objects.all().filter(ipf_num=ipf_num_record,
+                                                           col_header=desc_col_header,
+                                                           worksheet=latest_ws)[0].content
+
+        next_due_col_header = ColumnHeader.objects.all().filter(value="Next Procedure Date",
+                                                                worksheet=latest_ws)[0]
+        content["next_due"] = Cell.objects.all().filter(ipf_num=ipf_num_record,
+                                                        col_header=next_due_col_header,
+                                                        worksheet=latest_ws)[0].date_or_content
+
+        last_done_col_header = ColumnHeader.objects.all().filter(value="Last Procedure Date",
+                                                                 worksheet=latest_ws)[0]
+        content["last_done"] = Cell.objects.all().filter(ipf_num=ipf_num_record,
+                                                         col_header=last_done_col_header,
+                                                         worksheet=latest_ws)[0].date_or_content
+
 
         return render(request, self.template, content)
 
