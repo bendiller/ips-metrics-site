@@ -11,7 +11,10 @@
 </head>
 <body id="top">
 <section id="main" class="wrapper style1">
-    <header class="major">{% block header %} {% endblock %}</header>
+    <header class="major">
+        <img src="{% static 'metrics/logo.png' %}" width="475" height="160">
+        {% block header %} {% endblock %}
+    </header>
 <div class="container big">
 <div class="row">
     <div class="2u">

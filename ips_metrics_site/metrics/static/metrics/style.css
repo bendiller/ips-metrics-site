@@ -617,6 +617,11 @@
 	.table-wrapper {
 		-webkit-overflow-scrolling: touch;
 		overflow-x: auto;
+		border-style: solid;
+		border-width: 1px;
+		padding-top: 0.75em;
+		border-radius: 6px;
+		border-color: #bdc1c5;
 	}
 
 	table {
@@ -636,6 +641,7 @@
 
 		table td {
 			padding: 0.75em 0.75em;
+			vertical-align: middle;
 		}
 
 		table th {
@@ -837,7 +843,7 @@
 /* Wrapper */
 
 	.wrapper {
-		padding: 6em 0 4em 0;
+		padding: 4em 0 4em 0;
 	}
 
 		.wrapper.style1 {

@@ -1,7 +1,7 @@
 {% extends "metrics/base.html" %}
 
 {% block title %} Upcoming IPS Validations {% endblock %}
-{% block header %}<h2>IPS Validations Coming Due</h2> {% endblock %}
+{% block header %}<h2>Validations Due - {{days}} Days</h2> {% endblock %}
 
 {% block content %}
 {% if rows and col_headers %}
@@ -19,7 +19,7 @@
 
 
 
-
+<div class="table-wrapper">
 <table id="upcoming_items">
     <thead>
         <tr>
@@ -42,6 +42,7 @@
         {% endfor %}
     </tbody>
 </table>
+</div>
 
 {% else %}
 <p>Nothing due within the next {{days}} days.</p>
