@@ -122,7 +122,8 @@ class IPFDetail(View):
         content["documents"] = docs_blob["documents"]
 
         latest_ws = WorkSheet.objects.latest('modified_time')
-        ipf_num_record = IPFNumber.objects.all().filter(worksheet=latest_ws)[0]
+        ipf_num_record = IPFNumber.objects.all().filter(value=ipf_num,
+                                                        worksheet=latest_ws)[0]
         desc_col_header = ColumnHeader.objects.all().filter(value="Description",
                                                             worksheet=latest_ws)[0]
         content["description"] = Cell.objects.all().filter(ipf_num=ipf_num_record,
@@ -140,7 +141,6 @@ class IPFDetail(View):
         content["last_done"] = Cell.objects.all().filter(ipf_num=ipf_num_record,
                                                          col_header=last_done_col_header,
                                                          worksheet=latest_ws)[0].date_or_content
-
 
         return render(request, self.template, content)
 
