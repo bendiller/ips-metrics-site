@@ -4,16 +4,33 @@
 {% block header %}<h2>IPF #{{ ipf_num }} - {{ tag }}</h2> {% endblock %}
 
 {% block content %}
-<h3 id="doc_list_header">Documents</h3>
-<ul class="doc_list">
-    {% include "metrics/doc_item.html" with doc_items=documents %}
-</ul>
+<div class="row">
 
-{# {% for item in documents.items %} #}
+    <div class="7u">
+        <div class="doc_list_container">
+        <h3 id="doc_list_header">Documents</h3>
+        <ul class="doc_list">
+            {% include "metrics/doc_item.html" with doc_items=documents %}
+        </ul>
+
+        {# {% for item in documents.items %} #}
 
 
-    {# {% if not item.is_file %} #}
-        {# {{ item }}<br> #}
-    {# {% endif %} #}
-{# {% endfor %} #}
+            {# {% if not item.is_file %} #}
+                {# {{ item }}<br> #}
+            {# {% endif %} #}
+        {# {% endfor %} #}
+
+    </div></div>
+
+    <div class="5u">
+        <h3>Other Information</h3>
+        <ul>
+            <li>Site: site_name</li>
+            <li>Description: some_description</li>
+            <li>Last validated: some_date</li>
+            <li>Next validation due: some_date</li>
+        </ul>
+    </div>
+</div>
 {% endblock %}

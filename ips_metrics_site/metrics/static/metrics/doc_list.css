@@ -2,8 +2,12 @@ h3#doc_list_header {
     margin-bottom: 10px;
 }
 
+div.doc_list_container {
+    display: inline-block;
+    float: right;
+}
+
 ul.doc_list {
-    /*background-color: red;*/
     margin: 0;
     padding: 0;
     list-style-type: none;
