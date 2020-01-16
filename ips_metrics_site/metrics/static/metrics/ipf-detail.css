@@ -17,12 +17,10 @@ ul.doc_list li ul li{
     margin: 6px 30px;
 }
 
-/*
-ul li>ul.doc_list {
-    margin-top: 20px;
-}*/
-
-
 li:last-child {
     margin-bottom: 20px !important;
+}
+
+ul.dev_info li {
+    margin-top: 0.25em;
 }
