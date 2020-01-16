@@ -2,16 +2,19 @@
 <html lang="en" class="global xlarge large">
 <head>
     {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'metrics/dev/style.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'metrics/dev/skel.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'metrics/dev/style-xlarge.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'metrics/dev/doc_list.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'metrics/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'metrics/skel.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'metrics/style-xlarge.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'metrics/doc_list.css' %}">
     <meta charset="UTF-8">
     <title>{% block title %}IPS Metrics{% endblock %}</title>
 </head>
 <body id="top">
 <section id="main" class="wrapper style1">
-    <header class="major">{% block header %} {% endblock %}</header>
+    <header class="major">
+        <img src="{% static 'metrics/logo.png' %}" width="475" height="160">
+        {% block header %} {% endblock %}
+    </header>
 <div class="container big">
 <div class="row">
     <div class="2u">
