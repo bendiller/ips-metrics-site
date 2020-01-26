@@ -19,10 +19,10 @@
 <div class="container big">
 <div class="row">
     <ul class="nav">
-        <li><a href="/metrics/upcoming/30">Due Within: 30 days</a></li>
-        <li><a href="/metrics/upcoming/60">Due Within: 60 days</a></li>
-        <li><a href="/metrics/upcoming/90">Due Within: 90 days</a></li>
-        <li><a href="/metrics/upcoming/365">Due Within: 365 days</a></li>
+        <li><a href="{% url 'upcoming' 30 %}">Due Within: 30 days</a></li>
+        <li><a href="{% url 'upcoming' 60 %}">Due Within: 60 days</a></li>
+        <li><a href="{% url 'upcoming' 90 %}">Due Within: 90 days</a></li>
+        <li><a href="{% url 'upcoming' 365 %}">Due Within: 365 days</a></li>
     </ul>
 </div>
 <div class="row">

@@ -33,7 +33,7 @@
         <tr>
             {% for k, v in row.items %}
                 {% if k == "IPF Number" %}
-                <td><a href="http://10.142.136.82:8000/metrics/ipf/{{v}}">{{ v }}</a></td>
+                <td><a href="{% url 'ipf-detail' v %}">{{ v }}</a></td>
                 {% else %}
                 <td>{{ v }}</td>
                 {% endif %}
