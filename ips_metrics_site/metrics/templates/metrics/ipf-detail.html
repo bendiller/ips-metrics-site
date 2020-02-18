@@ -8,7 +8,13 @@
 
     <div class="7u">
         <div class="doc_list_container">
-        <h3 id="doc_list_header">Documents</h3>
+        <h3 id="doc_list_header">
+            Documents
+        </h3>
+        <form action="{% url 'repopulate' ipf_num %}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="Repopulate" class="button small alt">
+        </form><br>
         <ul class="doc_list">
             {% include "metrics/doc_item.html" with doc_items=documents %}
         </ul>

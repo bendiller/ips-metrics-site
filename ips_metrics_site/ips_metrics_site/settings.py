@@ -25,6 +25,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.getenv('SECRET_KEY')  # I added this - not default code. Default had an actual string (now in .env).
+DOC_PATHS = [p for p in os.getenv('DOC_PATHS').split(',')]
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

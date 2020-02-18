@@ -103,17 +103,18 @@ class Upcoming(View):
 
 class IPFDetail(View):
     template = 'metrics/ipf-detail.html'
-    def get(self, request, ipf_num, cmd=''):
-        # TODO - just a temporary measure to load from the JSON files previously collected, so that I can get a prototype for this View going.
-        if cmd == "load":
-            return HttpResponse(load(ipf_num))
 
+    def get(self, request, ipf_num):
         try:
             docs_blob = DocsBlob.objects.get(ipf_num=ipf_num)
-
         except ObjectDoesNotExist:
             return HttpResponse(f"IPF #{ipf_num} has not had details loaded yet.")
-        docs_blob = eval(docs_blob.content)
+
+        try:
+            # Necessary as try/except due to initial way data was stored
+            docs_blob = json.loads(docs_blob.content)
+        except json.decoder.JSONDecodeError as e:
+            docs_blob = eval(docs_blob.content)
 
         content = dict()
         content["ipf_num"] = ipf_num
@@ -165,6 +166,13 @@ class UpcomingDev(Upcoming):
 class IPFDetailDev(IPFDetail):
     """Simple approach to providing a dev-mode view that uses a different template"""
     template = 'metrics/dev/ipf-detail.html'
+
+
+class Repopulate(View):
+    def post(self, response, ipf_num):
+        doc_paths = DocsBlob.update(ipf_num)
+        context = {'result': doc_paths, 'ipf_num': ipf_num}
+        return render(response, 'metrics/ipf-repop.html', context)
 
 
 # From: https://docs.djangoproject.com/en/2.2/intro/tutorial03/

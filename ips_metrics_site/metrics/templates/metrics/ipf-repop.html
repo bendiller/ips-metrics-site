@@ -1,0 +1,16 @@
+{% extends "metrics/base.html" %}
+
+{% block title %} Repopulated IPF #{{ ipf_num }}{% endblock %}
+{% block header %}<h2>IPF #{{ ipf_num }}</h2> {% endblock %}
+
+{% block content %}
+<div class="row">
+    <div>
+        <h3 id="doc_list_header">Results:</h3>
+        <p>{{ result }}</p>
+        <a href="{% url 'ipf-detail' ipf_num %}">
+            Back to detail page for {{ipf_num}}
+        </a>
+    </div>
+</div>
+{% endblock %}

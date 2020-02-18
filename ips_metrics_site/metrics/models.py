@@ -1,5 +1,8 @@
 from datetime import datetime, timedelta
+import json
+import os
 
+from django.conf import settings
 from django.db import models
 
 from xlrd.xldate import xldate_as_datetime, xldate_from_date_tuple
@@ -118,3 +121,55 @@ class DocsBlob(models.Model):
 
     ipf_num = models.PositiveSmallIntegerField(unique=True)
     content = models.TextField()  # Not validating at this point, and may never, but this should always be JSON.
+
+    @staticmethod
+    def update(selected_ipf_num):
+        """Traverse directory tree to update record for documents."""
+        ipf_data = dict()
+        for p in settings.DOC_PATHS:
+            site = p.split('\\')[-1]
+            for ips_item_dir in sorted(os.listdir(p)):  # Iterate over directories for each IPS item
+                try:  # Parse directory names for "IPF number" and "tag data"
+                    ipf_num, tag = ips_item_dir.split(sep=" - ", maxsplit=1)
+                    if ipf_num == str(selected_ipf_num):
+                        ipf_data["site"] = site
+                        ipf_data["tag"] = tag
+                        full_path = os.path.join(p, ips_item_dir)
+                        ipf_data["documents"] = DocsBlob.process_doc_paths(full_path, top_level=True)
+                        break
+                except ValueError:
+                    continue  # This one is not a valid IPS item
+
+        # Make sure results appear to have been gathered before updating:
+        if "documents" in ipf_data and len(ipf_data["documents"]) > 0:
+            try:
+                docs_blob = DocsBlob.objects.get(ipf_num=selected_ipf_num)
+                docs_blob.content = json.dumps(ipf_data)
+                docs_blob.save()
+                return f"Successfully updated IPF: {selected_ipf_num}"
+            except DocsBlob.DoesNotExist:
+                return f"Could not retrieve DocsBlob for IPF: {selected_ipf_num}"
+        else:
+            return f"Something went wrong trying to parse directory structure for IPF: {selected_ipf_num}"
+
+    @staticmethod
+    def process_doc_paths(path_root, top_level=False):
+        """Recursively processes directory structure, adding directories and files to "data" argument"""
+        top_level_dirs = ['Drawings', 'Inspection History', 'Procedures']
+        data = {}
+        for item in os.listdir(path_root):  # Each item is essentially either a file or another directory
+            if top_level and item not in top_level_dirs:  # Skip unwanted dirs from top level of recursive search
+                continue
+            if item[0] is "~":  # Used by Microsoft Office for temporary copies of files
+                continue
+            path_new = os.path.join(path_root, item)
+            data[item] = {}
+            data[item]['full_path'] = path_new
+            if os.path.isfile(path_new):  # "Stop recursing" condition
+                data[item]['is_file'] = True
+                data[item]['sub_paths'] = {}
+            elif os.path.isdir(path_new):  # Begin next level of recursion
+                data[item]['is_file'] = False
+                data[item]['sub_paths'] = DocsBlob.process_doc_paths(path_new)
+
+        return data
