@@ -162,6 +162,8 @@ class DocsBlob(models.Model):
                 continue
             if item[0] is "~":  # Used by Microsoft Office for temporary copies of files
                 continue
+            elif item == "Thumbs.db":  # Windows file that is not useful for these purposes.
+                continue
             path_new = os.path.join(path_root, item)
             data[item] = {}
             data[item]['full_path'] = path_new
